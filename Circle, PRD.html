@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Circle — Values-Based Private Markets Platform</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300;1,9..40,400&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --black:    #0A0A0A;
+  --white:    #FAFAF9;
+  --blue:     #2B7FFF;
+  --blue-dim: rgba(43,127,255,0.12);
+  --mid:      #888884;
+  --line:     rgba(10,10,10,0.1);
+  --line-inv: rgba(250,250,249,0.12);
+
+  --f-display: 'DM Sans', 'Neue Montreal', 'Helvetica Neue', sans-serif;
+  --f-body:    'DM Sans', sans-serif;
+
+  --t-hero:  clamp(72px, 10vw, 148px);
+  --t-xl:    clamp(48px, 6vw, 88px);
+  --t-lg:    clamp(36px, 4vw, 60px);
+  --t-md:    clamp(24px, 3vw, 40px);
+  --t-body:  clamp(16px, 1.5vw, 19px);
+  --t-sm:    13px;
+  --t-xs:    11px;
+
+  --s-xs:  16px;
+  --s-sm:  32px;
+  --s-md:  64px;
+  --s-lg:  120px;
+  --s-xl:  200px;
+  --s-2xl: 320px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  font-family: var(--f-body);
+  background: var(--white);
+  color: var(--black);
+  line-height: 1.6;
+  overflow-x: hidden;
+  cursor: default;
+}
+::-webkit-scrollbar { width: 2px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--mid); }
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  z-index: 100;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 28px 56px;
+}
+.nav-logo {
+  font-size: var(--t-sm); font-weight: 500;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--black); text-decoration: none;
+  transition: color 0.3s ease;
+}
+.nav-links { display: flex; gap: 40px; list-style: none; }
+.nav-links a {
+  font-size: var(--t-xs); font-weight: 500;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--black); text-decoration: none;
+  opacity: 0.45; transition: opacity 0.25s ease, color 0.3s ease;
+}
+.nav-links a:hover { opacity: 1; }
+
+/* ── SECTION BASE ── */
+section { padding: var(--s-xl) 56px; position: relative; }
+
+.section-label {
+  font-size: var(--t-xs); font-weight: 500;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--mid); margin-bottom: var(--s-md);
+  display: flex; align-items: center; gap: 12px;
+}
+.section-label::before {
+  content: attr(data-n);
+  font-size: var(--t-xs); color: var(--blue); font-weight: 500;
+}
+
+/* ── REVEAL SYSTEM ── */
+.reveal {
+  opacity: 0; transform: translateY(32px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh; display: flex;
+  flex-direction: column; justify-content: flex-end;
+  padding: 0 56px var(--s-lg); position: relative; overflow: hidden;
+}
+.hero-eyebrow {
+  font-size: var(--t-xs); font-weight: 500;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--mid); margin-bottom: 32px;
+  display: flex; align-items: center; gap: 12px;
+  opacity: 0;
+  animation: fadeUp 0.9s 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.hero-eyebrow::before {
+  content: ''; display: block;
+  width: 32px; height: 1px; background: var(--mid);
+}
+.hero-h1 {
+  font-size: var(--t-hero); font-weight: 300;
+  line-height: 0.92; letter-spacing: -0.03em;
+  color: var(--black); max-width: 1100px; margin-bottom: 64px;
+  opacity: 0;
+  animation: fadeUp 1s 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.hero-h1 em { font-style: italic; font-weight: 300; }
+.hero-h1 .accent { color: var(--blue); }
+.hero-bottom {
+  display: flex; justify-content: space-between; align-items: flex-end;
+  border-top: 1px solid var(--line); padding-top: 28px;
+  opacity: 0;
+  animation: fadeUp 0.9s 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.hero-sub {
+  font-size: var(--t-body); color: var(--mid);
+  max-width: 480px; line-height: 1.7; font-weight: 300;
+}
+.hero-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+.hero-meta span { font-size: var(--t-xs); letter-spacing: 0.15em; text-transform: uppercase; color: var(--mid); }
+
+.scroll-cue {
+  position: absolute; right: 56px; top: 50%; transform: translateY(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  opacity: 0; animation: fadeIn 1s 1.2s ease forwards;
+}
+.scroll-cue span { font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; writing-mode: vertical-rl; color: var(--black); }
+.scroll-line { width: 1px; height: 80px; background: var(--black); transform-origin: top; animation: scrollPulse 2s ease-in-out infinite; }
+
+@keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 0.3; } }
+@keyframes scrollPulse { 0%, 100% { transform: scaleY(1); opacity: 1; } 50% { transform: scaleY(0.4); opacity: 0.3; } }
+
+/* ── THESIS ── */
+.thesis { background: var(--black); color: var(--white); }
+.thesis .section-label { color: rgba(250,250,249,0.3); }
+.thesis .section-label::before { color: var(--blue); }
+.thesis-headline {
+  font-size: var(--t-xl); font-weight: 300;
+  line-height: 1.0; letter-spacing: -0.025em;
+  max-width: 960px; margin-bottom: var(--s-md);
+}
+.thesis-headline em { font-style: italic; }
+.thesis-headline .accent { color: var(--blue); }
+.thesis-cols {
+  display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-md);
+  margin-top: var(--s-lg); border-top: 1px solid var(--line-inv); padding-top: var(--s-md);
+}
+.thesis-col p { font-size: var(--t-body); color: rgba(250,250,249,0.5); line-height: 1.75; font-weight: 300; max-width: 400px; margin-bottom: 16px; }
+.thesis-col p:last-child { margin-bottom: 0; }
+.thesis-col p strong { color: var(--white); font-weight: 400; }
+
+/* Problem breakdown — three numbered frictions */
+.frictions { margin-top: var(--s-lg); }
+.friction-row {
+  display: grid; grid-template-columns: 80px 1fr;
+  gap: 40px; padding: 32px 0;
+  border-bottom: 1px solid var(--line-inv); align-items: start;
+}
+.friction-row:first-child { border-top: 1px solid var(--line-inv); }
+.friction-n {
+  font-size: clamp(56px, 7vw, 96px); font-weight: 300;
+  letter-spacing: -0.04em; line-height: 0.85;
+  color: rgba(250,250,249,0.07); user-select: none;
+}
+.friction-body {}
+.friction-title { font-size: var(--t-md); font-weight: 300; letter-spacing: -0.015em; line-height: 1.2; color: var(--white); margin-bottom: 12px; }
+.friction-desc { font-size: 15px; color: rgba(250,250,249,0.45); line-height: 1.75; font-weight: 300; max-width: 580px; }
+
+/* ── MARKET ── */
+.market-headline {
+  font-size: var(--t-xl); font-weight: 300;
+  line-height: 1.0; letter-spacing: -0.025em;
+  max-width: 760px; margin-bottom: var(--s-xl);
+}
+.market-headline em { font-style: italic; color: var(--mid); }
+
+.market-numbers {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 1px; background: var(--line); border: 1px solid var(--line);
+  margin-bottom: var(--s-xl);
+}
+.mnum { background: var(--white); padding: 52px 40px; }
+.mnum-val {
+  font-size: clamp(52px, 6vw, 88px); font-weight: 300;
+  letter-spacing: -0.03em; line-height: 1; margin-bottom: 16px;
+  color: var(--black); transition: color 0.3s ease;
+}
+.mnum:hover .mnum-val { color: var(--blue); }
+.mnum-val .unit { font-size: 0.4em; vertical-align: top; margin-top: 0.3em; display: inline-block; }
+.mnum-label { font-size: var(--t-xs); letter-spacing: 0.12em; text-transform: uppercase; color: var(--mid); margin-bottom: 12px; }
+.mnum-desc { font-size: 14px; color: var(--mid); line-height: 1.65; font-weight: 300; max-width: 280px; }
+
+.funnel-row {
+  display: grid; grid-template-columns: 90px 1fr 200px;
+  align-items: center; gap: 40px;
+  padding: 36px 0; border-bottom: 1px solid var(--line);
+}
+.funnel-row:first-child { border-top: 1px solid var(--line); }
+.funnel-tag { font-size: var(--t-xs); font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; }
+.funnel-text { font-size: 15px; color: var(--mid); line-height: 1.65; font-weight: 300; max-width: 560px; }
+.funnel-num { font-size: clamp(36px, 4vw, 56px); font-weight: 300; letter-spacing: -0.02em; text-align: right; line-height: 1; }
+.f-tam .funnel-tag, .f-tam .funnel-num { color: var(--black); }
+.f-sam .funnel-tag, .f-sam .funnel-num { color: var(--mid); }
+.f-som .funnel-tag, .f-som .funnel-num { color: var(--blue); }
+
+/* Trend signals */
+.trends { margin-top: var(--s-xl); }
+.trend-headline {
+  font-size: var(--t-lg); font-weight: 300; letter-spacing: -0.02em;
+  line-height: 1.1; max-width: 600px; margin-bottom: var(--s-lg);
+}
+.trend-headline em { font-style: italic; color: var(--mid); }
+.trend-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr);
+  gap: 1px; background: var(--line); border: 1px solid var(--line);
+}
+.trend-cell { background: var(--white); padding: 40px 36px; }
+.trend-tag { font-size: var(--t-xs); letter-spacing: 0.2em; text-transform: uppercase; color: var(--blue); font-weight: 500; margin-bottom: 14px; }
+.trend-title { font-size: clamp(20px, 2.5vw, 28px); font-weight: 300; letter-spacing: -0.015em; line-height: 1.2; color: var(--black); margin-bottom: 12px; }
+.trend-body { font-size: 14px; color: var(--mid); line-height: 1.7; font-weight: 300; }
+
+/* ── COMPETITION ── */
+.comp { background: var(--black); color: var(--white); }
+.comp .section-label { color: rgba(250,250,249,0.3); }
+.comp .section-label::before { color: var(--blue); }
+.comp-headline {
+  font-size: var(--t-xl); font-weight: 300;
+  letter-spacing: -0.025em; line-height: 1.0;
+  color: var(--white); max-width: 840px; margin-bottom: var(--s-xl);
+}
+.comp-headline em { font-style: italic; }
+.comp-headline .accent { color: var(--blue); }
+
+/* Typology cards */
+.typology-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 1px; background: var(--line-inv);
+  border: 1px solid var(--line-inv); margin-bottom: var(--s-xl);
+}
+.typo-card { background: var(--black); padding: 40px 32px; position: relative; }
+.typo-card.highlight { background: rgba(43,127,255,0.07); }
+.typo-tier {
+  font-size: var(--t-xs); letter-spacing: 0.15em; text-transform: uppercase;
+  color: rgba(250,250,249,0.3); font-weight: 500; margin-bottom: 16px;
+}
+.typo-card.highlight .typo-tier { color: var(--blue); }
+.typo-name {
+  font-size: clamp(18px, 2vw, 24px); font-weight: 300;
+  letter-spacing: -0.01em; line-height: 1.2;
+  color: rgba(250,250,249,0.75); margin-bottom: 14px;
+}
+.typo-card.highlight .typo-name { color: var(--white); }
+.typo-desc { font-size: 14px; color: rgba(250,250,249,0.35); line-height: 1.7; font-weight: 300; margin-bottom: 20px; }
+.typo-card.highlight .typo-desc { color: rgba(250,250,249,0.55); }
+.typo-examples { font-size: 12px; color: rgba(250,250,249,0.25); letter-spacing: 0.05em; font-style: italic; }
+.typo-card.highlight .typo-examples { color: rgba(250,250,249,0.4); }
+.typo-circle-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: var(--t-xs); font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--blue); margin-top: 14px;
+}
+.typo-circle-badge::before { content: '✳'; font-size: 10px; }
+
+.comp-table-wrap { overflow-x: auto; margin-bottom: var(--s-lg); }
+.ctable { width: 100%; border-collapse: collapse; }
+.ctable th {
+  font-size: var(--t-xs); letter-spacing: 0.15em; text-transform: uppercase;
+  font-weight: 500; color: rgba(250,250,249,0.3); text-align: left;
+  padding: 14px 0; border-bottom: 1px solid var(--line-inv);
+}
+.ctable th:not(:first-child) { padding-left: 32px; }
+.ctable td {
+  padding: 22px 0; font-size: 15px; color: rgba(250,250,249,0.45);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  font-weight: 300; vertical-align: middle;
+}
+.ctable td:not(:first-child) { padding-left: 32px; }
+.ctable td:first-child { color: rgba(250,250,249,0.8); font-weight: 400; }
+.ctable tr.circle-row td { color: var(--white); font-weight: 400; }
+.ctable tr.circle-row td:first-child { color: var(--blue); font-weight: 500; }
+.c-dot { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; }
+.dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+.dot-y { background: var(--blue); }
+.dot-n { background: rgba(255,255,255,0.15); }
+.dot-p { background: rgba(250,200,50,0.7); }
+
+.comp-gap {
+  border-top: 1px solid var(--line-inv); padding-top: var(--s-md);
+  display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-md);
+}
+.comp-gap p { font-size: var(--t-body); color: rgba(250,250,249,0.45); font-weight: 300; line-height: 1.75; max-width: 460px; }
+.comp-gap p strong { color: var(--white); font-weight: 400; }
+.comp-gap p .bl { color: var(--blue); }
+
+/* ── PLATFORM / ACTION LAYER ── */
+.platform-headline {
+  font-size: var(--t-xl); font-weight: 300;
+  letter-spacing: -0.025em; line-height: 1.0;
+  max-width: 800px; margin-bottom: var(--s-xl);
+}
+.platform-headline em { font-style: italic; }
+
+.tier {
+  border-top: 1px solid var(--line); padding: 56px 0;
+  display: grid; grid-template-columns: 80px 1fr 1fr;
+  gap: 60px; align-items: start;
+}
+.tier-n {
+  font-size: clamp(80px, 8vw, 120px); font-weight: 300;
+  letter-spacing: -0.04em; line-height: 0.85;
+  color: rgba(10,10,10,0.05); user-select: none; transition: color 0.4s ease;
+}
+.tier:hover .tier-n { color: rgba(43,127,255,0.06); }
+.tier-phase { font-size: var(--t-xs); letter-spacing: 0.15em; text-transform: uppercase; font-weight: 500; margin-bottom: 12px; }
+.t1 .tier-phase { color: var(--blue); }
+.t2 .tier-phase, .t3 .tier-phase { color: var(--mid); }
+.tier-name { font-size: var(--t-md); font-weight: 300; letter-spacing: -0.015em; line-height: 1.2; margin-bottom: 20px; }
+.tier-reg { font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--mid); padding: 6px 12px; border: 1px solid var(--line); display: inline-block; border-radius: 2px; }
+.tier-body p { font-size: 15px; color: var(--mid); line-height: 1.75; font-weight: 300; margin-bottom: 24px; }
+.tier-body ul { list-style: none; }
+.tier-body ul li { font-size: 14px; color: var(--mid); padding: 10px 0; border-bottom: 1px solid var(--line); display: flex; gap: 12px; font-weight: 300; }
+.tier-body ul li::before { content: '→'; color: var(--blue); flex-shrink: 0; font-size: 12px; margin-top: 2px; }
+.tier-body ul li:last-child { border-bottom: none; }
+
+/* ── PRODUCT — three pillars ── */
+.product { background: var(--black); color: var(--white); }
+.product .section-label { color: rgba(250,250,249,0.3); }
+.product .section-label::before { color: var(--blue); }
+
+.product-headline {
+  font-size: var(--t-xl); font-weight: 300;
+  letter-spacing: -0.025em; line-height: 1.0;
+  color: var(--white); max-width: 800px; margin-bottom: var(--s-xl);
+}
+.product-headline em { font-style: italic; }
+
+.pillars {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 1px; background: var(--line-inv);
+  border: 1px solid var(--line-inv); margin-bottom: var(--s-lg);
+}
+.pillar { background: var(--black); padding: 52px 40px; }
+.pillar-n {
+  font-size: clamp(64px, 8vw, 108px); font-weight: 300;
+  letter-spacing: -0.04em; line-height: 0.85;
+  color: rgba(250,250,249,0.05); margin-bottom: 28px; user-select: none;
+}
+.pillar-name {
+  font-size: var(--t-md); font-weight: 300;
+  letter-spacing: -0.015em; line-height: 1.15;
+  color: var(--white); margin-bottom: 16px;
+}
+.pillar-desc { font-size: 15px; color: rgba(250,250,249,0.45); line-height: 1.75; font-weight: 300; margin-bottom: 28px; }
+.pillar-features { list-style: none; }
+.pillar-features li {
+  font-size: 13px; color: rgba(250,250,249,0.35);
+  padding: 8px 0; border-bottom: 1px solid var(--line-inv);
+  display: flex; gap: 10px; font-weight: 300; line-height: 1.5;
+}
+.pillar-features li::before { content: '→'; color: var(--blue); flex-shrink: 0; font-size: 11px; margin-top: 1px; }
+.pillar-features li:last-child { border-bottom: none; }
+
+/* How it works — a short editorial sequence */
+.how-works { margin-top: var(--s-lg); border-top: 1px solid var(--line-inv); padding-top: var(--s-md); }
+.how-label {
+  font-size: var(--t-xs); letter-spacing: 0.2em; text-transform: uppercase;
+  color: rgba(250,250,249,0.3); margin-bottom: var(--s-md);
+}
+.how-steps {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 1px; background: var(--line-inv); border: 1px solid var(--line-inv);
+}
+.how-step { background: var(--black); padding: 36px 28px; }
+.how-step-n {
+  font-size: var(--t-xs); letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--blue); font-weight: 500; margin-bottom: 14px;
+}
+.how-step-title {
+  font-size: clamp(18px, 2vw, 22px); font-weight: 300;
+  letter-spacing: -0.01em; line-height: 1.2; color: var(--white); margin-bottom: 10px;
+}
+.how-step-desc { font-size: 14px; color: rgba(250,250,249,0.4); line-height: 1.65; font-weight: 300; }
+
+/* ── CTA ── */
+.cta {
+  min-height: 80vh; display: flex; flex-direction: column; justify-content: center;
+  padding: var(--s-xl) 56px;
+}
+.cta-headline {
+  font-size: var(--t-hero); font-weight: 300;
+  letter-spacing: -0.035em; line-height: 0.88;
+  color: var(--black); margin-bottom: var(--s-lg); max-width: 1000px;
+}
+.cta-headline em { font-style: italic; }
+.cta-headline .accent { color: var(--blue); }
+.cta-bottom {
+  border-top: 1px solid var(--line); padding-top: 36px;
+  display: flex; justify-content: space-between; align-items: flex-end;
+}
+.cta-sub { font-size: var(--t-body); color: var(--mid); max-width: 520px; line-height: 1.75; font-weight: 300; }
+.cta-meta { text-align: right; display: flex; flex-direction: column; gap: 6px; }
+.cta-meta span { font-size: var(--t-xs); letter-spacing: 0.15em; text-transform: uppercase; color: var(--mid); opacity: 0.5; }
+
+/* ── FOOTER ── */
+footer {
+  background: var(--black); border-top: 1px solid var(--line-inv);
+  padding: 28px 56px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+footer span { font-size: var(--t-xs); letter-spacing: 0.15em; text-transform: uppercase; color: rgba(250,250,249,0.2); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  nav { padding: 20px 24px; }
+  .nav-links { gap: 20px; }
+  section, .hero, .cta { padding-left: 24px; padding-right: 24px; }
+  .hero { padding-bottom: 80px; }
+  .hero-h1 { font-size: clamp(52px, 12vw, 80px); }
+  .hero-bottom, .cta-bottom { flex-direction: column; gap: 24px; align-items: flex-start; }
+  .thesis-cols, .comp-gap { grid-template-columns: 1fr; gap: 24px; }
+  .market-numbers, .trend-grid { grid-template-columns: 1fr 1fr; }
+  .typology-grid, .pillars { grid-template-columns: 1fr; }
+  .how-steps { grid-template-columns: 1fr 1fr; }
+  .funnel-row { grid-template-columns: 60px 1fr; }
+  .funnel-num { display: none; }
+  .tier { grid-template-columns: 1fr; gap: 16px; }
+  .friction-row { grid-template-columns: 1fr; }
+  .friction-n { display: none; }
+  .scroll-cue { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav>
+  <a class="nav-logo" href="#">Circle ✳</a>
+  <ul class="nav-links">
+    <a href="#thesis">Problem</a>
+    <a href="#market">Market</a>
+    <a href="#platform">Platform</a>
+    <a href="#product">Product</a>
+  </ul>
+</nav>
+
+<!-- ══════════════════════════════════════
+     HERO
+══════════════════════════════════════════ -->
+<section class="hero">
+  <div class="scroll-cue">
+    <div class="scroll-line"></div>
+    <span>Scroll</span>
+  </div>
+
+  <div class="hero-eyebrow">Seed Round · March 2026</div>
+
+  <h1 class="hero-h1">
+    Capital is<br>
+    <em>relational.</em><br>
+    Investing<br>
+    shouldn't be <span class="accent">solo.</span>
+  </h1>
+
+  <div class="hero-bottom">
+    <p class="hero-sub">Circle builds the infrastructure for values-based collective investing — turning the next generation's desire for meaning, community, and accountability into a new kind of private markets platform.</p>
+    <div class="hero-meta">
+      <span>Pre-Product · In Discovery</span>
+      <span>Seed Stage · 2026</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     THESIS / PROBLEM
+══════════════════════════════════════════ -->
+<section class="thesis" id="thesis">
+  <div class="section-label" data-n="01">Problem</div>
+
+  <h2 class="thesis-headline reveal">
+    Investing is a<br>
+    <em>social</em> activity<br>
+    built on entirely<br>
+    <span class="accent">individual</span> rails.
+  </h2>
+
+  <div class="thesis-cols reveal reveal-delay-2">
+    <div class="thesis-col">
+      <p>Capital is inherently relational. Founders and investors build trust before any exchange. Communities form around shared values and a common understanding of the future they want to build.</p>
+      <p>Yet the infrastructure of investing — the accounts, the platforms, the legal vehicles — <strong>treats every investor as a solitary actor.</strong> Isolated. Unaccountable. Alone with their capital.</p>
+    </div>
+    <div class="thesis-col">
+      <p>The next generation of investors feels this most acutely. <strong>Younger, less individually wealthy, and deeply values-driven</strong>, they are entering private markets at the exact moment those markets are democratising — but the coordination tools to act <em>together</em> don't exist.</p>
+      <p>Circle is the infrastructure they're missing: a platform that makes collective participation in private markets possible, purposeful, and governed.</p>
+    </div>
+  </div>
+
+  <div class="frictions reveal">
+    <div class="friction-row">
+      <div class="friction-n">01</div>
+      <div class="friction-body">
+        <div class="friction-title">Securities law isolates retail investors from private markets</div>
+        <div class="friction-desc">Accredited investor requirements and SPV complexity create structural barriers that exclude most next-gen investors from the asset classes where wealth is actually built. Democratisation is happening — but without the community layer to make it meaningful.</div>
+      </div>
+    </div>
+    <div class="friction-row">
+      <div class="friction-n">02</div>
+      <div class="friction-body">
+        <div class="friction-title">True collective governance collapses under coordination costs</div>
+        <div class="friction-desc">Shared decision-making is slow, expensive, and interpersonally fragile without the right infrastructure. Investment clubs dissolve. DAOs failed their promise. Multi-donor funds require institutional overhead most groups can't sustain. The governance layer is the missing piece.</div>
+      </div>
+    </div>
+    <div class="friction-row">
+      <div class="friction-n">03</div>
+      <div class="friction-body">
+        <div class="friction-title">Capital alienation: investors are disconnected from their own money</div>
+        <div class="friction-desc">When investing is purely transactional and individual, capital loses its relational character. The next generation senses this and wants more — not just returns, but stewardship, accountability, and a genuine connection between their values and where their money goes.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     MARKET
+══════════════════════════════════════════ -->
+<section class="market" id="market">
+  <div class="section-label" data-n="02">Market</div>
+
+  <h2 class="market-headline reveal">
+    $124T is about<br>
+    to change<br>
+    <em>hands and values</em>
+  </h2>
+
+  <div class="market-numbers reveal reveal-delay-1">
+    <div class="mnum">
+      <div class="mnum-val">$124<span class="unit">T</span></div>
+      <div class="mnum-label">Great Wealth Transfer</div>
+      <div class="mnum-desc">Cerulli Associates: $124T transfers to next-gen inheritors in the next decade. New owners with fundamentally different investment identities.</div>
+    </div>
+    <div class="mnum">
+      <div class="mnum-val">81<span class="unit">%</span></div>
+      <div class="mnum-label">Plan to fire their advisor</div>
+      <div class="mnum-desc">81% of next-gen inheritors plan to replace their parents' wealth managers. The primary reason: values misalignment and no community dimension.</div>
+    </div>
+    <div class="mnum">
+      <div class="mnum-val">$30<span class="unit">T</span></div>
+      <div class="mnum-label">Alternatives AUM by 2035</div>
+      <div class="mnum-desc">Private markets projected to nearly double to $30T by 2035, with retail investors the fastest-growing segment. The rails exist. The community layer doesn't.</div>
+    </div>
+  </div>
+
+  <div class="reveal reveal-delay-2">
+    <div class="funnel-row f-tam">
+      <span class="funnel-tag">TAM</span>
+      <span class="funnel-text">Next-gen investors (25–45) entering private markets during the great wealth transfer, with expressed demand for values-aligned, community-governed investing. Anchored by the $124T in transitioning wealth.</span>
+      <span class="funnel-num">$124T</span>
+    </div>
+    <div class="funnel-row f-sam">
+      <span class="funnel-tag">SAM</span>
+      <span class="funnel-text">Values-aligned next-gen investors with existing or inherited private market access — DAF holders, impact-curious HNW individuals, early-career professionals entering accredited status. Roughly 8–12% of total wealth transfer by intent profile.</span>
+      <span class="funnel-num">~$10–15T</span>
+    </div>
+    <div class="funnel-row f-som">
+      <span class="funnel-tag">SOM</span>
+      <span class="funnel-text">Year 1–3 reachable market via founder network, mission-aligned DAF sponsors, and 2–3 initial collective cohorts. 500–2,000 members deploying $25K–$150K annually through Circle-facilitated collectives.</span>
+      <span class="funnel-num">$50–300M</span>
+    </div>
+  </div>
+
+  <div class="trends reveal">
+    <h3 class="trend-headline">Four structural shifts <em>converging now</em></h3>
+    <div class="trend-grid">
+      <div class="trend-cell">
+        <div class="trend-tag">Shift 01</div>
+        <div class="trend-title">Capital as values</div>
+        <div class="trend-body">Increasingly, where capital goes is seen as a direct expression of identity. Next-gen investors don't just want returns — they want stewardship. Capital is action, not abstraction.</div>
+      </div>
+      <div class="trend-cell">
+        <div class="trend-tag">Shift 02</div>
+        <div class="trend-title">Collectivised decision-making</div>
+        <div class="trend-body">Growth in peer investment communities, syndicate ecosystems, and donor collaboratives signals genuine appetite for shared decision-making — not just individual tools with social overlays.</div>
+      </div>
+      <div class="trend-cell">
+        <div class="trend-tag">Shift 03</div>
+        <div class="trend-title">Private market democratisation</div>
+        <div class="trend-body">SPVs, rolling funds, ELTIF 2.0, and Reg CF are making alternatives accessible to smaller investors. The infrastructure exists. The community and governance layer to use it collectively does not.</div>
+      </div>
+      <div class="trend-cell">
+        <div class="trend-tag">Shift 04</div>
+        <div class="trend-title">AI elevates trust, not just access</div>
+        <div class="trend-body">AI is commoditising raw information advantage. What appreciates in value is human judgment, trusted curation, and authentic community. Private markets — where trust is the primary currency — are where this premium is highest.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     COMPETITION
+══════════════════════════════════════════ -->
+<section class="comp" id="competition">
+  <div class="section-label" data-n="03">Competition</div>
+
+  <h2 class="comp-headline reveal">
+    The space is full<br>
+    of <em>access</em> tools.<br>
+    No one is building<br>
+    for <span class="accent">collective sovereignty.</span>
+  </h2>
+
+  <!-- Typology: the 6 models, Circle highlighted -->
+  <div class="typology-grid reveal reveal-delay-1">
+    <div class="typo-card">
+      <div class="typo-tier">Model 01</div>
+      <div class="typo-name">Social Layer</div>
+      <div class="typo-desc">Community features wrap individual investing. Feeds, discussion, copy mechanics. Reduces isolation but doesn't change governance, ownership, or accountability.</div>
+      <div class="typo-examples">→ eToro, Public.com, StockTwits</div>
+    </div>
+    <div class="typo-card">
+      <div class="typo-tier">Model 02</div>
+      <div class="typo-name">Community of Practice</div>
+      <div class="typo-desc">Peer networks for learning, norms, and curated access. Epistemic value is high. Portfolios remain individual — governance doesn't change.</div>
+      <div class="typo-examples">→ Investment clubs, Syndicate networks</div>
+    </div>
+    <div class="typo-card">
+      <div class="typo-tier">Model 03</div>
+      <div class="typo-name">Syndicate / SPV Pooling</div>
+      <div class="typo-desc">Investors pool into a single vehicle for cap-table simplicity. Governance centralises with a lead GP. Collective participation — but not collective sovereignty.</div>
+      <div class="typo-examples">→ AngelList, Republic, Carta</div>
+    </div>
+    <div class="typo-card highlight">
+      <div class="typo-tier">Model 04 — Circle's Territory</div>
+      <div class="typo-name">Pooled Capital with Shared Governance</div>
+      <div class="typo-desc">Pooled capital and pooled decision-making with explicit governance processes. Multi-donor DAFs, cooperative vehicles, donor collaboratives. The highest form of collective investing — currently requiring institutional overhead.</div>
+      <div class="typo-examples">→ Multi-donor DAFs, Collective Climate Justice Fund</div>
+      <div class="typo-circle-badge">Circle makes this accessible</div>
+    </div>
+    <div class="typo-card">
+      <div class="typo-tier">Model 05</div>
+      <div class="typo-name">Place-Based Accountability</div>
+      <div class="typo-desc">Community investment through CDFIs and investable notes. Investors accept mediated relationship with clearer geographic accountability. Institutional, slow, underfunded in tech.</div>
+      <div class="typo-examples">→ CDFIs, Community foundations</div>
+    </div>
+    <div class="typo-card">
+      <div class="typo-tier">Model 06</div>
+      <div class="typo-name">Ownership Redesign</div>
+      <div class="typo-desc">Democratic ownership structures — CLTs, employee trusts, steward-ownership. Highest structural change; constrained liquidity. Long-horizon, not a platform play.</div>
+      <div class="typo-examples">→ Community land trusts, Purpose trusts</div>
+    </div>
+  </div>
+
+  <div class="comp-table-wrap reveal reveal-delay-2">
+    <table class="ctable">
+      <thead>
+        <tr>
+          <th>Platform</th>
+          <th>Collective governance?</th>
+          <th>Values intelligence?</th>
+          <th>Private markets access?</th>
+          <th>Next-gen focus?</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Republic</td>
+          <td><span class="c-dot"><span class="dot dot-n"></span>None</span></td>
+          <td><span class="c-dot"><span class="dot dot-n"></span>None</span></td>
+          <td><span class="c-dot"><span class="dot dot-y"></span>Yes (Reg CF)</span></td>
+          <td><span class="c-dot"><span class="dot dot-n"></span>No</span></td>
+        </tr>
+        <tr>
+          <td>AngelList Syndicates</td>
+          <td><span class="c-dot"><span class="dot dot-p"></span>Co-invest only</span></td>
+          <td><span class="c-dot"><span class="dot dot-n"></span>None</span></td>
+          <td><span class="c-dot"><span class="dot dot-y"></span>Yes (Reg D)</span></td>
+          <td><span class="c-dot"><span class="dot dot-n"></span>No</span></td>
+        </tr>
+        <tr>
+          <td>Mutua</td>
+          <td><span class="c-dot"><span class="dot dot-n"></span>None</span></td>
+          <td><span class="c-dot"><span class="dot dot-p"></span>Partial</span></td>
+          <td><span class="c-dot"><span class="dot dot-p"></span>Sourcing only</span></td>
+          <td><span class="c-dot"><span class="dot dot-p"></span>Emerging</span></td>
+        </tr>
+        <tr>
+          <td>WeFunder / Climatize</td>
+          <td><span class="c-dot"><span class="dot dot-n"></span>None</span></td>
+          <td><span class="c-dot"><span class="dot dot-n"></span>None</span></td>
+          <td><span class="c-dot"><span class="dot dot-y"></span>Yes (Reg CF)</span></td>
+          <td><span class="c-dot"><span class="dot dot-n"></span>No</span></td>
+        </tr>
+        <tr>
+          <td>DAOs</td>
+          <td><span class="c-dot"><span class="dot dot-p"></span>Technically yes</span></td>
+          <td><span class="c-dot"><span class="dot dot-n"></span>None</span></td>
+          <td><span class="c-dot"><span class="dot dot-p"></span>Token-based</span></td>
+          <td><span class="c-dot"><span class="dot dot-p"></span>Crypto-native only</span></td>
+        </tr>
+        <tr class="circle-row">
+          <td>Circle ✳</td>
+          <td><span class="c-dot"><span class="dot dot-y"></span>Native — first-class</span></td>
+          <td><span class="c-dot"><span class="dot dot-y"></span>Core layer</span></td>
+          <td><span class="c-dot"><span class="dot dot-y"></span>Full stack (tiered)</span></td>
+          <td><span class="c-dot"><span class="dot dot-y"></span>Primary wedge</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="comp-gap reveal reveal-delay-3">
+    <div>
+      <p>Republic and AngelList have solved the infrastructure problem for individual access to private markets. DAOs attempted collective governance and failed — not because the idea was wrong, but because the product was wrong: crypto-native, ungoverned, and disconnected from real investment discipline.</p>
+    </div>
+    <div>
+      <p>No platform combines <span class="bl">genuine collective governance</span>, values intelligence, and a full private markets deployment stack. <strong>That intersection is Circle's founding territory.</strong> The question is not whether the demand exists — the wealth transfer data is unambiguous. The question is whether the governance layer can be made lightweight enough to scale.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     PLATFORM / ACTION LAYER
+══════════════════════════════════════════ -->
+<section class="platform" id="platform">
+  <div class="section-label" data-n="04">Platform</div>
+
+  <h2 class="platform-headline reveal">
+    Three deployment<br>
+    tiers. One<br>
+    <em>governed</em> stack.
+  </h2>
+
+  <div class="tier t1 reveal">
+    <div class="tier-n">01</div>
+    <div class="tier-info">
+      <div class="tier-phase">Tier 1 · Launch</div>
+      <div class="tier-name">Collective Giving via DAF Sponsor</div>
+      <div class="tier-reg">No securities registration required</div>
+    </div>
+    <div class="tier-body">
+      <p>The cleanest regulatory entry point. Circle facilitates collective grant and philanthropic investment decisions through users' existing DAF sponsors. Circle passes instructions — it never holds or moves capital. The governance and deliberation layer is entirely ours; the execution layer is the sponsor's.</p>
+      <ul>
+        <li>Values profile matching surfaces relevant opportunities</li>
+        <li>Collective workspace: async deliberation, pledge signalling, lightweight vote</li>
+        <li>Grant instruction generation in DAF sponsor-compatible format</li>
+        <li>Capital types: grants, recoverable grants, programme-related investments (PRIs)</li>
+        <li>Phase 1b: direct API integration with ImpactAssets, Amalgamated Foundation</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="tier t2 reveal">
+    <div class="tier-n">02</div>
+    <div class="tier-info">
+      <div class="tier-phase">Tier 2 · 6–12 Months</div>
+      <div class="tier-name">Reg CF Partnership — Retail Access</div>
+      <div class="tier-reg">Partner with registered funding portal</div>
+    </div>
+    <div class="tier-body">
+      <p>Circle partners with an existing Reg CF portal — Republic's impact vertical or a white-label arrangement — to open non-accredited investor participation. Circle owns the values intelligence and collective deliberation; the portal handles securities compliance. Unlocks the full next-gen cohort, not just accredited members.</p>
+      <ul>
+        <li>$5M per offering ceiling per 12-month period</li>
+        <li>Opens participation to non-accredited investors</li>
+        <li>Capital types: debt notes, revenue-based finance, community equity</li>
+        <li>Enables place-based collective investment rounds — watersheds, local food systems, housing</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="tier t3 reveal">
+    <div class="tier-n">03</div>
+    <div class="tier-info">
+      <div class="tier-phase">Tier 3 · 18+ Months</div>
+      <div class="tier-name">Reg D SPV — Collective Investment Vehicle</div>
+      <div class="tier-reg">Reg D 506(b) · Accredited investors only</div>
+    </div>
+    <div class="tier-body">
+      <p>A Reg D SPV pools accredited investors from a Circle collective into a single legal entity for one investment decision. Members contribute capital; the SPV makes the investment; members share governance and economic participation. Infrastructure via AngelList or Carta; Circle provides the values layer, collective governance, and diligence process on top.</p>
+      <ul>
+        <li>Accredited investor verification per member</li>
+        <li>$5–15K legal cost per SPV — amortised across the collective</li>
+        <li>5–10% carry on returns above hurdle (AngelList syndicate model)</li>
+        <li>Capital types: early-stage equity, impact debt, nature finance, co-investment</li>
+        <li>Pre-requisite: securities attorney confirmation and Reg D filing protocol</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     PRODUCT
+══════════════════════════════════════════ -->
+<section class="product" id="product">
+  <div class="section-label" data-n="05">Product</div>
+
+  <h2 class="product-headline reveal">
+    Three pillars.<br>
+    One platform<br>
+    that turns <em>values</em><br>
+    into action.
+  </h2>
+
+  <div class="pillars reveal reveal-delay-1">
+    <div class="pillar">
+      <div class="pillar-n">01</div>
+      <div class="pillar-name">Values &amp; Identity Intelligence</div>
+      <div class="pillar-desc">A values profile engine that translates who you are and what you care about into a live investment lens — and matches you to people who share it.</div>
+      <ul class="pillar-features">
+        <li>10-minute values onboarding: issue priorities, place-alignment, capital type preference, collective intent</li>
+        <li>ML-refined match scores across opportunities and co-investors</li>
+        <li>Narrative translation: turns financial data into stories investors connect with</li>
+        <li>AI-powered education layer: contextual explainers surfaced inside diligence cards</li>
+      </ul>
+    </div>
+    <div class="pillar">
+      <div class="pillar-n">02</div>
+      <div class="pillar-name">Collective Workspace &amp; Governance</div>
+      <div class="pillar-desc">The infrastructure that makes shared decision-making lightweight enough to actually work — without collapsing under coordination costs or losing accountability.</div>
+      <ul class="pillar-features">
+        <li>Create or join a named collective (3–20 members)</li>
+        <li>Shared opportunity feed filtered by collective values alignment</li>
+        <li>Async deliberation: discussion threads, interest signals, structured debate</li>
+        <li>Lightweight vote with commitment thresholds and revocable pledges</li>
+        <li>Accountability layer: post-deployment impact tracking, member reporting</li>
+      </ul>
+    </div>
+    <div class="pillar">
+      <div class="pillar-n">03</div>
+      <div class="pillar-name">Curated Opportunity Discovery</div>
+      <div class="pillar-desc">A sourced, diligenced pipeline of private market opportunities — ranked by values-match score, not just financial returns. Expert-curated, not user-generated.</div>
+      <ul class="pillar-features">
+        <li>Expert-curated diligence cards: financials, impact thesis, team, use of funds</li>
+        <li>Values-alignment rationale written for each opportunity</li>
+        <li>Filterable by capital type, deal size, geography, theme, and collective history</li>
+        <li>Community signal layer: anonymised aggregate interest, no individual exposure</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="how-works reveal reveal-delay-2">
+    <div class="how-label">How it works → a user journey</div>
+    <div class="how-steps">
+      <div class="how-step">
+        <div class="how-step-n">Step 01</div>
+        <div class="how-step-title">Build your values profile</div>
+        <div class="how-step-desc">10-minute onboarding captures what you care about, how you want to act, and who you want to act with. This is your investment identity — refined over time.</div>
+      </div>
+      <div class="how-step">
+        <div class="how-step-n">Step 02</div>
+        <div class="how-step-title">Join or form a Circle</div>
+        <div class="how-step-desc">Find peers with aligned values and investment intent. Your Circle is a named, governed group — not a feed. 3–20 members. Real relationships, real decisions.</div>
+      </div>
+      <div class="how-step">
+        <div class="how-step-n">Step 03</div>
+        <div class="how-step-title">Deliberate on curated opportunities</div>
+        <div class="how-step-desc">Your shared feed surfaces opportunities matched to your Circle's collective values profile. Deliberate asynchronously. Signal interest. Read expert diligence. Build consensus.</div>
+      </div>
+      <div class="how-step">
+        <div class="how-step-n">Step 04</div>
+        <div class="how-step-title">Deploy together</div>
+        <div class="how-step-desc">From grant instruction to Reg D SPV — execute the collective decision through the appropriate deployment tier. Track impact. Close the loop. Do it again.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     CTA
+══════════════════════════════════════════ -->
+<section class="cta">
+  <h2 class="cta-headline reveal">
+    The question<br>
+    isn't <em>whether</em><br>
+    this generation<br>
+    invests <span class="accent">differently.</span>
+  </h2>
+
+  <div class="cta-bottom reveal reveal-delay-2">
+    <p class="cta-sub">$124 trillion is moving to investors who fundamentally reject the individual, isolated, values-blind model of wealth management. The question is what infrastructure they'll use to act collectively. Circle is building it — starting with the governance layer that every other platform has left out.</p>
+    <div class="cta-meta">
+      <span>Circle · Seed Round</span>
+      <span>Pre-Product · March 2026</span>
+      <span>In Discovery</span>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <span>Circle ✳ Collective Capital Platform</span>
+  <span>Investor Document · Exploratory · Pre-Product</span>
+</footer>
+
+<script>
+// Scroll reveal
+const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) entry.target.classList.add('visible');
+  });
+}, { threshold: 0.08, rootMargin: '0px 0px -60px 0px' });
+reveals.forEach(el => observer.observe(el));
+
+// Nav colour adaptation
+const navLogo = document.querySelector('.nav-logo');
+const navLinks = document.querySelectorAll('.nav-links a');
+
+function updateNav() {
+  const scrollY = window.scrollY + 60;
+  const darkEls = document.querySelectorAll('.thesis, .comp, .product, footer');
+  let inDark = false;
+  darkEls.forEach(el => {
+    const top = el.offsetTop;
+    const bottom = top + el.offsetHeight;
+    if (scrollY >= top && scrollY <= bottom) inDark = true;
+  });
+  const darkColor = 'rgba(250,250,249,0.8)';
+  const lightColor = 'var(--black)';
+  navLogo.style.color = inDark ? darkColor : lightColor;
+  navLinks.forEach(a => { a.style.color = inDark ? darkColor : lightColor; });
+}
+
+window.addEventListener('scroll', updateNav, { passive: true });
+updateNav();
+</script>
+</body>
+</html>
